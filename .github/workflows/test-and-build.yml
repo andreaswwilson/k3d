@@ -1,0 +1,48 @@
+name: Test and Build
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore
+        run: dotnet restore backend/Backend.slnx
+
+      - name: Build
+        run: dotnet build backend/Backend.slnx -c Release --no-restore
+
+      - name: Test
+        run: dotnet test backend/tests/Backend.Tests/ -c Release --no-build
+
+  build-backend:
+    name: Build Backend Image
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Build backend Docker image
+        run: docker build -t k3d-andreas-backend:latest backend
+
+  build-frontend:
+    name: Build Frontend Image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Build frontend Docker image
+        run: docker build -t k3d-andreas-frontend:latest frontend

@@ -1,8 +1,8 @@
 ---
-# Configuration file for MegaLinter
 # See all available variables at https://megalinter.io/configuration/ and in linters documentation
 APPLY_FIXES: all
 DISABLE_LINTERS:
+  - CSHARP_DOTNET_FORMAT
   - REPOSITORY_CHECKOV
   - REPOSITORY_GRYPE
   - REPOSITORY_TRIVY

@@ -3,14 +3,10 @@ using Backend.Tests.Fixtures;
 
 namespace Backend.Tests;
 
-public class HealthControllerTests : IClassFixture<CustomWebApplicationFactory>
+public class HealthControllerTests(CustomWebApplicationFactory factory)
+    : IClassFixture<CustomWebApplicationFactory>
 {
-    private readonly HttpClient _client;
-
-    public HealthControllerTests(CustomWebApplicationFactory factory)
-    {
-        _client = factory.CreateClient();
-    }
+    private readonly HttpClient _client = factory.CreateClient();
 
     [Fact]
     public async Task Get_ReturnsHelloFromBackend()

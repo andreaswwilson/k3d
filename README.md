@@ -77,7 +77,7 @@ make test-backend
 
 ## Project Structure
 
-```
+```text
 ├── Makefile                  # Build and deployment targets
 ├── ansible/                  # Ansible playbooks for setup/teardown
 ├── backend/                  # ASP.NET Core 10 Web API (C# 14)

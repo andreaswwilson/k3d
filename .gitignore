@@ -1,4 +1,5 @@
 .env
+megalinter-reports/
 tofu/.terraform/
 tofu/.terraform.lock.hcl
 tofu/terraform.tfstate

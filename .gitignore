@@ -1,2 +1,6 @@
 .env
+tofu/.terraform/
+tofu/.terraform.lock.hcl
+tofu/terraform.tfstate
+tofu/terraform.tfstate.backup
 certs/

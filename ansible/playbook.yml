@@ -15,14 +15,11 @@
     - name: Create certificates
       ansible.builtin.include_tasks: tasks/create_certs.yml
 
-    - name: Create Kubernetes namespace
-      ansible.builtin.include_tasks: tasks/create_namespace.yml
-
     - name: Build and import frontend image
       ansible.builtin.include_tasks: tasks/build_frontend.yml
 
-    - name: Deploy dummy applications
-      ansible.builtin.include_tasks: tasks/deploy_apps.yml
+    - name: Deploy with OpenTofu
+      ansible.builtin.include_tasks: tasks/tofu_apply.yml
 
     - name: Add 127.0.0.1 andreas.local to /etc/hosts if missing
       ansible.builtin.lineinfile:

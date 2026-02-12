@@ -1,0 +1,17 @@
+---
+- name: Initialize OpenTofu
+  ansible.builtin.command: tofu init
+  args:
+    chdir: "{{ playbook_dir }}/../tofu"
+    creates: "{{ playbook_dir }}/../tofu/.terraform"
+
+- name: Apply OpenTofu configuration
+  ansible.builtin.command: >
+    tofu apply -auto-approve
+    -var="postgres_password={{ postgres_password }}"
+    -var="tls_cert_path={{ playbook_dir }}/../certs/andreas.local.pem"
+    -var="tls_key_path={{ playbook_dir }}/../certs/andreas.local-key.pem"
+  args:
+    chdir: "{{ playbook_dir }}/../tofu"
+  register: tofu_apply
+  changed_when: "'Apply complete' in tofu_apply.stdout"

@@ -10,3 +10,9 @@
   register: mkcert_check
   changed_when: false
   failed_when: mkcert_check.rc != 0
+
+- name: Check if tofu is installed
+  ansible.builtin.command: which tofu
+  register: tofu_check
+  changed_when: false
+  failed_when: tofu_check.rc != 0

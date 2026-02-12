@@ -3,6 +3,26 @@
 - name: Destroy k3d cluster and clean up
   hosts: localhost
   tasks:
+    - name: Load .env file
+      ansible.builtin.shell: grep -E '^POSTGRES_PASSWORD=' {{ playbook_dir }}/../.env | cut -d= -f2-
+      register: env_password
+      changed_when: false
+      failed_when: false
+
+    - name: Set postgres password from .env
+      ansible.builtin.set_fact:
+        postgres_password: "{{ env_password.stdout | default('unused') }}"
+
+    - name: Destroy OpenTofu resources
+      ansible.builtin.command: >
+        tofu destroy -auto-approve
+        -var="postgres_password={{ postgres_password }}"
+        -var="tls_cert_path={{ playbook_dir }}/../certs/andreas.local.pem"
+        -var="tls_key_path={{ playbook_dir }}/../certs/andreas.local-key.pem"
+      args:
+        chdir: "{{ playbook_dir }}/../tofu"
+      failed_when: false
+
     - name: Delete k3d cluster andreas
       ansible.builtin.command: k3d cluster delete andreas
       register: cluster_delete
@@ -24,3 +44,13 @@
       ansible.builtin.file:
         path: "{{ playbook_dir }}/../.env"
         state: absent
+
+    - name: Remove OpenTofu state
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - "{{ playbook_dir }}/../tofu/.terraform"
+        - "{{ playbook_dir }}/../tofu/.terraform.lock.hcl"
+        - "{{ playbook_dir }}/../tofu/terraform.tfstate"
+        - "{{ playbook_dir }}/../tofu/terraform.tfstate.backup"

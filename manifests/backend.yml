@@ -16,12 +16,10 @@ spec:
     spec:
       containers:
         - name: backend
-          image: hashicorp/http-echo
-          args:
-            - "-text=hello from backend"
-            - "-listen=:5678"
+          image: k3d-andreas-backend:latest
+          imagePullPolicy: Never
           ports:
-            - containerPort: 5678
+            - containerPort: 8080
 ---
 apiVersion: v1
 kind: Service
@@ -32,5 +30,5 @@ spec:
   selector:
     app: backend
   ports:
-    - port: 5678
-      targetPort: 5678
+    - port: 8080
+      targetPort: 8080

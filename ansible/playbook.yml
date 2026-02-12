@@ -19,6 +19,9 @@
     - name: Build and import frontend image
       ansible.builtin.include_tasks: tasks/build_frontend.yml
 
+    - name: Build and import backend image
+      ansible.builtin.include_tasks: tasks/build_backend.yml
+
     - name: Deploy with OpenTofu
       ansible.builtin.include_tasks: tasks/tofu_apply.yml
 

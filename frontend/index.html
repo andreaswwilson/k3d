@@ -28,7 +28,7 @@
       el.className = 'loading';
       el.textContent = 'Checking backend...';
       try {
-        const res = await fetch('/api');
+        const res = await fetch('/api/healthcheck');
         const text = await res.text();
         el.className = 'success';
         el.textContent = '✅ Backend says: ' + text.trim();

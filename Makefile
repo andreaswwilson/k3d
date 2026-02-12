@@ -1,4 +1,4 @@
-.PHONY: deploy destroy rebuild tofu-apply tofu-destroy
+.PHONY: deploy destroy rebuild rebuild-frontend rebuild-backend test test-backend tofu-apply tofu-destroy
 
 deploy:
 	sudo -v && ansible-playbook ansible/playbook.yml --become
@@ -6,11 +6,24 @@ deploy:
 destroy:
 	sudo -v && ansible-playbook ansible/cleanup.yml --become
 
-rebuild:
+rebuild: rebuild-frontend rebuild-backend
+
+rebuild-frontend:
 	docker build -t k3d-andreas-frontend:latest frontend && \
 	k3d image import k3d-andreas-frontend:latest -c andreas && \
 	kubectl rollout restart deployment/frontend -n andreas && \
 	kubectl rollout status deployment/frontend -n andreas --timeout=60s
+
+rebuild-backend:
+	docker build -t k3d-andreas-backend:latest backend && \
+	k3d image import k3d-andreas-backend:latest -c andreas && \
+	kubectl rollout restart deployment/backend -n andreas && \
+	kubectl rollout status deployment/backend -n andreas --timeout=60s
+
+test: test-backend
+
+test-backend:
+	dotnet test backend/tests/Backend.Tests/
 
 tofu-apply:
 	cd tofu && tofu apply -auto-approve \

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Andreas K3D Demo</title>
+  <style>
+    body { font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; background: #1a1a2e; color: #eee; }
+    .container { text-align: center; }
+    h1 { margin-bottom: 1rem; }
+    #status { padding: 1rem 2rem; border-radius: 8px; font-size: 1.2rem; margin-top: 1rem; }
+    .success { background: #16a34a; }
+    .error { background: #dc2626; }
+    .loading { background: #555; }
+    button { margin-top: 1rem; padding: 0.5rem 1.5rem; font-size: 1rem; cursor: pointer; border: none; border-radius: 4px; background: #3b82f6; color: #fff; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Andreas K3D Demo</h1>
+    <p>Frontend → Backend connectivity test</p>
+    <div id="status" class="loading">Checking backend...</div>
+    <button onclick="checkBackend()">Retry</button>
+  </div>
+  <script>
+    async function checkBackend() {
+      const el = document.getElementById('status');
+      el.className = 'loading';
+      el.textContent = 'Checking backend...';
+      try {
+        const res = await fetch('/api');
+        const text = await res.text();
+        el.className = 'success';
+        el.textContent = '✅ Backend says: ' + text.trim();
+      } catch (err) {
+        el.className = 'error';
+        el.textContent = '❌ Failed to reach backend: ' + err.message;
+      }
+    }
+    checkBackend();
+  </script>
+</body>
+</html>

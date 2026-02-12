@@ -18,6 +18,9 @@
     - name: Create Kubernetes namespace
       ansible.builtin.include_tasks: tasks/create_namespace.yml
 
+    - name: Build and import frontend image
+      ansible.builtin.include_tasks: tasks/build_frontend.yml
+
     - name: Deploy dummy applications
       ansible.builtin.include_tasks: tasks/deploy_apps.yml
 

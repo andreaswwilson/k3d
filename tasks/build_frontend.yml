@@ -1,0 +1,9 @@
+---
+- name: Build frontend Docker image
+  ansible.builtin.command: docker build -t k3d-andreas-frontend:latest {{ playbook_dir }}/frontend
+  register: frontend_build
+  changed_when: "'Successfully built' in frontend_build.stdout or 'exporting to image' in frontend_build.stderr"
+
+- name: Import frontend image into k3d cluster
+  ansible.builtin.command: k3d image import k3d-andreas-frontend:latest -c andreas
+  changed_when: true

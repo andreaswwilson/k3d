@@ -7,5 +7,5 @@ namespace Backend.Api.Controllers;
 public class HealthCheckController : ControllerBase
 {
     [HttpGet]
-    public IActionResult Get() => Ok("hello from backend");
+    public IActionResult Get() => Ok("healthy");
 }

@@ -1,0 +1,26 @@
+---
+- name: Check if .env file exists
+  ansible.builtin.stat:
+    path: "{{ playbook_dir }}/.env"
+  register: env_file
+
+- name: Generate random postgres password
+  ansible.builtin.set_fact:
+    postgres_password: "{{ lookup('ansible.builtin.password', '/dev/null length=32 chars=ascii_letters,digits') }}"
+  when: not env_file.stat.exists
+
+- name: Create .env file with postgres password
+  ansible.builtin.copy:
+    dest: "{{ playbook_dir }}/.env"
+    content: "POSTGRES_PASSWORD={{ postgres_password }}\n"
+    mode: "0600"
+  when: not env_file.stat.exists
+
+- name: Load .env file
+  ansible.builtin.shell: grep -E '^POSTGRES_PASSWORD=' {{ playbook_dir }}/.env | cut -d= -f2-
+  register: env_password
+  changed_when: false
+
+- name: Set postgres password from .env
+  ansible.builtin.set_fact:
+    postgres_password: "{{ env_password.stdout }}"

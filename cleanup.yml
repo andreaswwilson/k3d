@@ -1,0 +1,26 @@
+---
+# Run with: sudo -v && ansible-playbook cleanup.yml --become
+- name: Destroy k3d cluster and clean up
+  hosts: localhost
+  tasks:
+    - name: Delete k3d cluster andreas
+      ansible.builtin.command: k3d cluster delete andreas
+      register: cluster_delete
+      changed_when: "'Deleted' in cluster_delete.stdout"
+      failed_when: false
+
+    - name: Remove andreas.local from /etc/hosts
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        line: "127.0.0.1 andreas.local"
+        state: absent
+
+    - name: Remove certificates directory
+      ansible.builtin.file:
+        path: "{{ playbook_dir }}/certs"
+        state: absent
+
+    - name: Remove .env file
+      ansible.builtin.file:
+        path: "{{ playbook_dir }}/.env"
+        state: absent

@@ -1,0 +1,28 @@
+---
+# Run with: sudo -v && ansible-playbook playbook.yml --become
+- name: Ensure /etc/hosts contains andreas.local entry
+  hosts: localhost
+  tasks:
+    - name: Check required tools
+      ansible.builtin.include_tasks: tasks/check_tools.yml
+
+    - name: Create k3d cluster
+      ansible.builtin.include_tasks: tasks/create_cluster.yml
+
+    - name: Generate environment config
+      ansible.builtin.include_tasks: tasks/generate_env.yml
+
+    - name: Create certificates
+      ansible.builtin.include_tasks: tasks/create_certs.yml
+
+    - name: Create Kubernetes namespace
+      ansible.builtin.include_tasks: tasks/create_namespace.yml
+
+    - name: Deploy dummy applications
+      ansible.builtin.include_tasks: tasks/deploy_apps.yml
+
+    - name: Add 127.0.0.1 andreas.local to /etc/hosts if missing
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        line: "127.0.0.1 andreas.local"
+        state: present

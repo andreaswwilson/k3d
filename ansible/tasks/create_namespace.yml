@@ -18,7 +18,7 @@
 - name: Create TLS secret from certificates
   ansible.builtin.command: >
     kubectl create secret tls andreas-local-tls
-    --cert={{ playbook_dir }}/certs/andreas.local.pem
-    --key={{ playbook_dir }}/certs/andreas.local-key.pem
+    --cert={{ playbook_dir }}/../certs/andreas.local.pem
+    --key={{ playbook_dir }}/../certs/andreas.local-key.pem
     -n andreas
   when: tls_check.rc != 0

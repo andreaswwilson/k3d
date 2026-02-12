@@ -5,17 +5,17 @@
 
 - name: Create certificate directory
   ansible.builtin.file:
-    path: "{{ playbook_dir }}/certs"
+    path: "{{ playbook_dir }}/../certs"
     state: directory
     mode: "0755"
 
 - name: Check if certificate already exists
   ansible.builtin.stat:
-    path: "{{ playbook_dir }}/certs/andreas.local.pem"
+    path: "{{ playbook_dir }}/../certs/andreas.local.pem"
   register: cert_file
 
 - name: Generate certificate for andreas.local
   ansible.builtin.command: mkcert -cert-file andreas.local.pem -key-file andreas.local-key.pem andreas.local
   args:
-    chdir: "{{ playbook_dir }}/certs"
+    chdir: "{{ playbook_dir }}/../certs"
   when: not cert_file.stat.exists

@@ -13,21 +13,21 @@
   when: pg_secret_check.rc != 0
 
 - name: Deploy frontend
-  ansible.builtin.command: kubectl apply -f {{ playbook_dir }}/manifests/frontend.yml
+  ansible.builtin.command: kubectl apply -f {{ playbook_dir }}/../manifests/frontend.yml
   register: frontend_deploy
   changed_when: "'created' in frontend_deploy.stdout or 'configured' in frontend_deploy.stdout"
 
 - name: Deploy backend
-  ansible.builtin.command: kubectl apply -f {{ playbook_dir }}/manifests/backend.yml
+  ansible.builtin.command: kubectl apply -f {{ playbook_dir }}/../manifests/backend.yml
   register: backend_deploy
   changed_when: "'created' in backend_deploy.stdout or 'configured' in backend_deploy.stdout"
 
 - name: Deploy postgres
-  ansible.builtin.command: kubectl apply -f {{ playbook_dir }}/manifests/postgres.yml
+  ansible.builtin.command: kubectl apply -f {{ playbook_dir }}/../manifests/postgres.yml
   register: postgres_deploy
   changed_when: "'created' in postgres_deploy.stdout or 'configured' in postgres_deploy.stdout"
 
 - name: Deploy ingress
-  ansible.builtin.command: kubectl apply -f {{ playbook_dir }}/manifests/ingress.yml
+  ansible.builtin.command: kubectl apply -f {{ playbook_dir }}/../manifests/ingress.yml
   register: ingress_deploy
   changed_when: "'created' in ingress_deploy.stdout or 'configured' in ingress_deploy.stdout"

@@ -17,10 +17,10 @@
 
     - name: Remove certificates directory
       ansible.builtin.file:
-        path: "{{ playbook_dir }}/certs"
+        path: "{{ playbook_dir }}/../certs"
         state: absent
 
     - name: Remove .env file
       ansible.builtin.file:
-        path: "{{ playbook_dir }}/.env"
+        path: "{{ playbook_dir }}/../.env"
         state: absent

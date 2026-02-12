@@ -31,8 +31,3 @@
   ansible.builtin.command: kubectl apply -f {{ playbook_dir }}/manifests/ingress.yml
   register: ingress_deploy
   changed_when: "'created' in ingress_deploy.stdout or 'configured' in ingress_deploy.stdout"
-
-- name: Deploy network policy
-  ansible.builtin.command: kubectl apply -f {{ playbook_dir }}/manifests/network-policy.yml
-  register: netpol_deploy
-  changed_when: "'created' in netpol_deploy.stdout or 'configured' in netpol_deploy.stdout"

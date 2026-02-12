@@ -9,38 +9,8 @@
     k3d cluster create andreas
     --port "80:80@loadbalancer"
     --port "443:443@loadbalancer"
-    --k3s-arg "--flannel-backend=none@server:*"
-    --k3s-arg "--disable-network-policy@server:*"
   when: "'andreas' not in (k3d_clusters.stdout | from_json | map(attribute='name') | list)"
 
 - name: Switch kubectl context to k3d-andreas
   ansible.builtin.command: kubectl config use-context k3d-andreas
-  changed_when: false
-
-- name: Wait for cluster nodes to be ready
-  ansible.builtin.command: kubectl wait --for=condition=Ready nodes --all --timeout=120s
-  changed_when: false
-
-- name: Check if Cilium is installed
-  ansible.builtin.command: helm status cilium -n kube-system
-  register: cilium_check
-  changed_when: false
-  failed_when: false
-
-- name: Add Cilium Helm repo
-  ansible.builtin.command: helm repo add cilium https://helm.cilium.io/
-  when: cilium_check.rc != 0
-  changed_when: true
-
-- name: Install Cilium via Helm
-  ansible.builtin.command: >
-    helm install cilium cilium/cilium
-    --namespace kube-system
-    --set operator.replicas=1
-  when: cilium_check.rc != 0
-
-- name: Wait for Cilium pods to be ready
-  ansible.builtin.command: >
-    kubectl wait --for=condition=Ready pods -l app.kubernetes.io/name=cilium-agent
-    -n kube-system --timeout=120s
   changed_when: false

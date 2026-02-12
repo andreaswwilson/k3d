@@ -10,9 +10,3 @@
   register: mkcert_check
   changed_when: false
   failed_when: mkcert_check.rc != 0
-
-- name: Check if helm is installed
-  ansible.builtin.command: which helm
-  register: helm_check
-  changed_when: false
-  failed_when: helm_check.rc != 0

@@ -1,7 +1,8 @@
 ---
 # Run with: sudo -v && ansible-playbook playbook.yml --become
-- name: Ensure /etc/hosts contains andreas.local entry
+- name: Setup k3d environment
   hosts: localhost
+  become: false
   tasks:
     - name: Check required tools
       ansible.builtin.include_tasks: tasks/check_tools.yml
@@ -22,6 +23,7 @@
       ansible.builtin.include_tasks: tasks/tofu_apply.yml
 
     - name: Add 127.0.0.1 andreas.local to /etc/hosts if missing
+      become: true
       ansible.builtin.lineinfile:
         path: /etc/hosts
         line: "127.0.0.1 andreas.local"

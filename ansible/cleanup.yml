@@ -2,6 +2,7 @@
 # Run with: sudo -v && ansible-playbook cleanup.yml --become
 - name: Destroy k3d cluster and clean up
   hosts: localhost
+  become: false
   tasks:
     - name: Load .env file
       ansible.builtin.shell: grep -E '^POSTGRES_PASSWORD=' {{ playbook_dir }}/../.env | cut -d= -f2-
@@ -13,6 +14,11 @@
       ansible.builtin.set_fact:
         postgres_password: "{{ env_password.stdout | default('unused') }}"
 
+    - name: Check if OpenTofu state exists
+      ansible.builtin.stat:
+        path: "{{ playbook_dir }}/../tofu/terraform.tfstate"
+      register: tfstate
+
     - name: Destroy OpenTofu resources
       ansible.builtin.command: >
         tofu destroy -auto-approve
@@ -22,6 +28,7 @@
       args:
         chdir: "{{ playbook_dir }}/../tofu"
       failed_when: false
+      when: tfstate.stat.exists
 
     - name: Delete k3d cluster andreas
       ansible.builtin.command: k3d cluster delete andreas
@@ -30,6 +37,7 @@
       failed_when: false
 
     - name: Remove andreas.local from /etc/hosts
+      become: true
       ansible.builtin.lineinfile:
         path: /etc/hosts
         line: "127.0.0.1 andreas.local"

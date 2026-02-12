@@ -1,13 +1,13 @@
-resource "kubernetes_namespace" "andreas" {
+resource "kubernetes_namespace_v1" "andreas" {
   metadata {
     name = "andreas"
   }
 }
 
-resource "kubernetes_secret" "tls" {
+resource "kubernetes_secret_v1" "tls" {
   metadata {
     name      = "andreas-local-tls"
-    namespace = kubernetes_namespace.andreas.metadata[0].name
+    namespace = kubernetes_namespace_v1.andreas.metadata[0].name
   }
 
   type = "kubernetes.io/tls"
@@ -18,10 +18,10 @@ resource "kubernetes_secret" "tls" {
   }
 }
 
-resource "kubernetes_secret" "postgres_credentials" {
+resource "kubernetes_secret_v1" "postgres_credentials" {
   metadata {
     name      = "postgres-credentials"
-    namespace = kubernetes_namespace.andreas.metadata[0].name
+    namespace = kubernetes_namespace_v1.andreas.metadata[0].name
   }
 
   data = {
@@ -38,7 +38,7 @@ resource "kubernetes_manifest" "frontend" {
 
   manifest = each.value
 
-  depends_on = [kubernetes_namespace.andreas]
+  depends_on = [kubernetes_namespace_v1.andreas]
 }
 
 resource "kubernetes_manifest" "backend" {
@@ -50,7 +50,7 @@ resource "kubernetes_manifest" "backend" {
 
   manifest = each.value
 
-  depends_on = [kubernetes_namespace.andreas]
+  depends_on = [kubernetes_namespace_v1.andreas]
 }
 
 resource "kubernetes_manifest" "postgres" {
@@ -62,7 +62,7 @@ resource "kubernetes_manifest" "postgres" {
 
   manifest = each.value
 
-  depends_on = [kubernetes_namespace.andreas, kubernetes_secret.postgres_credentials]
+  depends_on = [kubernetes_namespace_v1.andreas, kubernetes_secret_v1.postgres_credentials]
 }
 
 resource "kubernetes_manifest" "ingress" {
@@ -74,5 +74,5 @@ resource "kubernetes_manifest" "ingress" {
 
   manifest = each.value
 
-  depends_on = [kubernetes_namespace.andreas, kubernetes_secret.tls]
+  depends_on = [kubernetes_namespace_v1.andreas, kubernetes_secret_v1.tls]
 }

@@ -1,5 +1,4 @@
 using Backend.Tests.Fixtures;
-using FluentAssertions;
 using Npgsql;
 
 namespace Backend.Tests;
@@ -23,6 +22,6 @@ public class DatabaseIntegrationTests : IClassFixture<PostgresFixture>
         await using var command = new NpgsqlCommand("SELECT 1", connection);
         var result = await command.ExecuteScalarAsync();
 
-        result.Should().Be(1);
+        Assert.Equal(1, result);
     }
 }

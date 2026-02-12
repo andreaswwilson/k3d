@@ -1,6 +1,5 @@
 using System.Net;
 using Backend.Tests.Fixtures;
-using FluentAssertions;
 
 namespace Backend.Tests;
 
@@ -18,8 +17,8 @@ public class HealthControllerTests : IClassFixture<CustomWebApplicationFactory>
     {
         var response = await _client.GetAsync("/api/healthcheck");
 
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var content = await response.Content.ReadAsStringAsync();
-        content.Should().Be("hello from backend");
+        Assert.Equal("hello from backend", content);
     }
 }
